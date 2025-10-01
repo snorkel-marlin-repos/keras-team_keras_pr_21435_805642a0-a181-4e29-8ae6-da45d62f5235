@@ -545,10 +545,6 @@ def broadcast_to(x, shape):
     return OpenVINOKerasTensor(ov_opset.broadcast(x, target_shape).output(0))
 
 
-def cbrt(x):
-    raise NotImplementedError("`cbrt` is not supported with openvino backend")
-
-
 def ceil(x):
     x = get_ov_output(x)
     return OpenVINOKerasTensor(ov_opset.ceil(x).output(0))
@@ -644,12 +640,6 @@ def cumsum(x, axis=None, dtype=None):
         axis = 0
     axis = ov_opset.constant(axis, Type.i32).output(0)
     return OpenVINOKerasTensor(ov_opset.cumsum(x, axis).output(0))
-
-
-def deg2rad(x):
-    raise NotImplementedError(
-        "`deg2rad` is not supported with openvino backend"
-    )
 
 
 def diag(x, k=0):
@@ -1177,9 +1167,9 @@ def nan_to_num(x, nan=0.0, posinf=None, neginf=None):
 
 def ndim(x):
     x = get_ov_output(x)
-    shape_tensor = ov_opset.shape_of(x, Type.i64).output(0)
-    rank_tensor = ov_opset.shape_of(shape_tensor, Type.i64).output(0)
-    return OpenVINOKerasTensor(rank_tensor)
+    x_shape = ov_opset.shape_of(x).output(0)
+    x_dim = ov_opset.shape_of(x_shape, "i64")
+    return x_dim
 
 
 def nonzero(x):
